@@ -27,6 +27,12 @@
     |1 => arr1d |
     |2 => arr2d |
     -------------
+
+           __mode
+    --------------------
+    |  ma = > automatic|
+    |   mm => manual   |
+    --------------------
 */
 
 // covertitore di putatori
@@ -48,10 +54,10 @@ bool *__putbool(void *p)
 }
 
 // funzioni random
-int __randomint(int min, int max)
+int __randomint()
 {
     srand(time(NULL));
-    return min + rand() % (max - min + 1);
+    return 1 + rand();
 }
 char __randomchar()
 {
@@ -86,9 +92,38 @@ void __printpt(char __type, void *__po, char temp[], int _addbyte)
         exit(-1);
     }
 }
+// funzione di input
+void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
+{
+    void *__pt = __po;
+    switch (__type)
+    {
+    case 'd':
+        _addbyte *= sizeof(int);
+        if (__mode == 'a')
+            *(__putint(__pt + _addbyte)) = __randomint();
+        else
+            scanf(temp, (__putint(__pt + _addbyte)));
+        break;
+    case 'f':
+        _addbyte *= sizeof(float);
+        scanf(temp, (__putfloat(__pt + _addbyte)));
+        break;
+    case 'c':
+        _addbyte *= sizeof(char);
+        scanf(temp, (__putchars(__pt + _addbyte)));
+        break;
+    case 'b':
+        _addbyte *= sizeof(bool);
+        scanf(temp, (__putbool(__pt + _addbyte)));
+        break;
+    default:
+        exit(-1);
+    }
+}
 
 // vettori 2d
-void printarr(void *__arr, char __type[2], int __nlenarr, int __dim)
+void printarr(void *__arr, const char __type[2], int __nlenarr, int __dim)
 {
     if (__type[0] != 't' || __arr == NULL || __dim > 1)
         exit(-1);
@@ -100,24 +135,25 @@ void printarr(void *__arr, char __type[2], int __nlenarr, int __dim)
     return;
 }
 
-void fullarr(void *__arr, char __type[2], int __nlenarr, int __dim)
+void fullarr(void *__arr, const char __type[2], int __nlenarr, int __dim, const char __mode[2])
 {
-    if (__type[0] != 't' || __arr == NULL || __dim > 1)
+    if (__type[0] != 't' || __mode[0] != 'm' || __arr == NULL || __dim > 1)
         exit(-1);
-    char temp[] = {'%', __type[1], ' '};
+    char temp[] = {'%', __type[1]};
+
     for (size_t i = 0; i < __nlenarr; i++)
     {
-        __printpt(*(__type + 1), __arr, temp, i);
+        __inputpt(*(__type + 1), __arr, temp, i);
     }
     return;
 }
 
 // vettori 3d
-void printmaatt(int __nlenarrR, int __nlenarrC, void *__matt, char __type[2])
+void printmaatt(int __nlenarrR, int __nlenarrC, void *__matt, const char __type[2])
 {
     if (__type[0] != 't' || __matt == NULL)
         exit(-1);
-    char temp[] = {'%', __type[1], ' '};
+    char temp[] = {'%', __type[1]};
     for (size_t i = 0; i < __nlenarrR * __nlenarrC; i++)
     {
         if (i != 0 && i % __nlenarrC == 0)
@@ -128,7 +164,7 @@ void printmaatt(int __nlenarrR, int __nlenarrC, void *__matt, char __type[2])
     }
 }
 
-void fullmaatt(int __nlenarrR, int __nlenarrC, void *__matt, char __type[2], char __mode)
+void fullmaatt(int __nlenarrR, int __nlenarrC, void *__matt, const char __type[2], const char __mode[])
 {
     if (__type[0] != 't' || __matt == NULL)
         exit(-1);
