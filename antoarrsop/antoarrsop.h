@@ -2,8 +2,6 @@
 #ifndef antoarrsop_H
 #define antoarrsop_H
 
-// Library include
-
 /*One-dimensional and two-dimensional array library.
 
        _type
