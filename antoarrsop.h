@@ -15,72 +15,132 @@
         _type
     --------------
     |tipe => code|
-    |int  =>   ti|
+    |int  =>   td|
     |float =>  tf|
     |char  =>  tc|
     |bool  =>  tb|
     --------------
 
         _dim
-    ---------------
-    |n => arrnd  |
-    |1 => arr1d  |
-    |2 => arr2d  |
-    |            |
-    |            |
-    ---------------
+    -------------
+    |n => arrnd |
+    |1 => arr1d |
+    |2 => arr2d |
+    -------------
 */
-void __changpt(char __type, void *__po, char *temp)
+
+// covertitore di putatori
+char *__putchars(void *p)
 {
-    auto *__pt = __po;
+    return (char *)p;
+}
+int *__putint(void *p)
+{
+    return (int *)p;
+}
+float *__putfloat(void *p)
+{
+    return (float *)p;
+}
+bool *__putbool(void *p)
+{
+    return (bool *)p;
+}
+
+// funzioni random
+int __randomint(int min, int max)
+{
+    srand(time(NULL));
+    return min + rand() % (max - min + 1);
+}
+char __randomchar()
+{
+    __srand(time(NULL));
+    int num_casuale = rand() % 26;
+    return 'a' + num_casuale;
+}
+
+// funzione stampa
+void __printpt(char __type, void *__po, char temp[], int _addbyte)
+{
+    void *__pt = __po;
     switch (__type)
     {
-    case 'i':
-        __pt = (int *)__po;
-        *temp = 'd';
+    case 'd':
+        _addbyte *= sizeof(int);
+        printf(temp, *(__putint(__pt + _addbyte)));
         break;
     case 'f':
-        __pt = (float *)__po;
-        *temp = 'f';
+        _addbyte *= sizeof(float);
+        printf(temp, *(__putfloat(__pt + _addbyte)));
         break;
     case 'c':
-        __pt = (char *)__po;
-        *temp = 'c';
+        _addbyte *= sizeof(char);
+        printf(temp, *(__putchars(__pt + _addbyte)));
         break;
     case 'b':
-        __pt = (bool *)__po;
-        *temp = 'b';
+        _addbyte *= sizeof(bool);
+        printf(temp, *(__putbool(__pt + _addbyte)));
         break;
     default:
         exit(-1);
     }
-    __po = __pt;
 }
+
+// vettori 2d
 void printarr(void *__arr, char __type[2], int __nlenarr, int __dim)
 {
-    char temp[] = {'%', '?', ' '};
     if (__type[0] != 't' || __arr == NULL || __dim > 1)
         exit(-1);
-    auto *tp = __arr;
-    __changpt(*(__type + 1), tp, (temp + 1));
+    char temp[] = {'%', __type[1], ' '};
     for (size_t i = 0; i < __nlenarr; i++)
     {
-        printf(temp, *(tp + i));
+        __printpt(*(__type + 1), __arr, temp, i);
     }
     return;
 }
 
+void fullarr(void *__arr, char __type[2], int __nlenarr, int __dim)
+{
+    if (__type[0] != 't' || __arr == NULL || __dim > 1)
+        exit(-1);
+    char temp[] = {'%', __type[1], ' '};
+    for (size_t i = 0; i < __nlenarr; i++)
+    {
+        __printpt(*(__type + 1), __arr, temp, i);
+    }
+    return;
+}
+
+// vettori 3d
 void printmaatt(int __nlenarrR, int __nlenarrC, void *__matt, char __type[2])
 {
-    char temp[] = {'%', '?', ' '};
     if (__type[0] != 't' || __matt == NULL)
         exit(-1);
-    auto *__matt1 = __matt1;
-    __changpt(*(__type + 1), __matt, (temp + 1));
+    char temp[] = {'%', __type[1], ' '};
     for (size_t i = 0; i < __nlenarrR * __nlenarrC; i++)
     {
-        printf(temp, *(__matt1 + i));
+        if (i != 0 && i % __nlenarrC == 0)
+        {
+            printf("\n");
+        }
+        __printpt(*(__type + 1), __matt, temp, i);
     }
 }
 
+void fullmaatt(int __nlenarrR, int __nlenarrC, void *__matt, char __type[2], char __mode)
+{
+    if (__type[0] != 't' || __matt == NULL)
+        exit(-1);
+    char temp[] = {'%', __type[1], ' '};
+
+    for (size_t i = 0; i < __nlenarrR * __nlenarrC; i++)
+    {
+        if (i != 0 && i % __nlenarrC == 0)
+        {
+            printf("\n");
+        }
+        __printpt(*(__type + 1), __matt, temp, i);
+    }
+}
 #endif

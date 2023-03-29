@@ -10,8 +10,7 @@ void fullarray(int n, char (*__matt)[n], int *na)
             printf("Inserisci il %d° elemento nella %d° riga del %d° array: ", z + 1, i + 1, *na);
 
             // Pulisci il buffer di input
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
 
             scanf("%c", &__matt[i][z]);
         }
@@ -21,7 +20,7 @@ void fullarray(int n, char (*__matt)[n], int *na)
 
 int main()
 {
-    int A[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    bool A[3][3] = {{1,0,1}, {1,0,1}, {0,1,0}};
     printf("Ecco l'arrey:\n");
-    printmaatt(3, 3, A, "ti");
+    printmaatt(3, 3, A, "tb");
 }
