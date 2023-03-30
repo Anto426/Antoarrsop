@@ -88,7 +88,7 @@ void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
         _addbyte *= sizeof(int);
         if (__mode == 'a')
 
-            *(__putint(__pt + _addbyte)) = __randomint(_addbyte, 0, 1000);
+            *(__putint(__pt + _addbyte)) = __randomint(1, 1000, _addbyte);
         else
             scanf(temp, (__putint(__pt + _addbyte)));
         break;
