@@ -25,9 +25,9 @@ bool *__putbool(void *p)
 }
 
 // Random number generator
-int __randomint(int plus)
+int __randomint(int min, int max, int plus)
 {
-    int min = 0, max = 1000, intc;
+    int intc;
     srand(time(NULL) + plus);
     intc = rand() % (max - min + 1) + min;
     return intc;
@@ -42,9 +42,7 @@ float __randomfloat(int plus)
 }
 char __randomchar(int plus)
 {
-    srand(time(NULL) + plus);
-    int num_casuale = rand() % 26;
-    return 'a' + num_casuale;
+    return __randomint(33, 127, plus);
 }
 
 bool __randombool(int plus)
@@ -89,7 +87,8 @@ void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
     case 'd':
         _addbyte *= sizeof(int);
         if (__mode == 'a')
-            *(__putint(__pt + _addbyte)) = __randomint(_addbyte);
+
+            *(__putint(__pt + _addbyte)) = __randomint(_addbyte, 0, 1000);
         else
             scanf(temp, (__putint(__pt + _addbyte)));
         break;
@@ -129,6 +128,7 @@ void PrintArr(void *__arr, int __nlenarr, const char __type[2])
     {
         __printpt(*(__type + 1), __arr, temp, i);
     }
+    printf("\n");
     return;
 }
 
@@ -142,6 +142,7 @@ void FullArr(void *__arr, int __nlenarr, const char __type[2], const char __mode
     {
         __inputpt(*(__type + 1), __arr, temp, i, *(__mode + 1));
     }
+
     return;
 }
 
@@ -160,6 +161,7 @@ void PrintMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2]
         }
         __printpt(*(__type + 1), __matt, temp, i);
     }
+    printf("\n");
 }
 
 void FullMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2], const char __mode[2])
