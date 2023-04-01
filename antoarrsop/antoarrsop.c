@@ -47,8 +47,7 @@ char __randomchar(int plus)
 
 bool __randombool(int plus)
 {
-    srand(time(NULL) + plus);
-    int numero_casuale = rand();
+    int numero_casuale = __randomint(33, 127, plus);
     bool booleano_casuale = (numero_casuale % 2 == 0) ? true : false;
     return booleano_casuale;
 }
@@ -81,6 +80,7 @@ void __printpt(char __type, void *__po, char temp[], int _addbyte)
 // Input function
 void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
 {
+
     void *__pt = __po;
     switch (__type)
     {
@@ -119,19 +119,6 @@ void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
 }
 
 // 2D array
-void PrintArr(void *__arr, int __nlenarr, const char __type[2])
-{
-    if (__type[0] != 't' || __arr == NULL || __nlenarr <= 1)
-        exit(-1);
-    char temp[] = {'%', __type[1], '\t'};
-    for (size_t i = 0; i < __nlenarr; i++)
-    {
-        __printpt(*(__type + 1), __arr, temp, i);
-    }
-    printf("\n");
-    return;
-}
-
 void FullArr(void *__arr, int __nlenarr, const char __type[2], const char __mode[2])
 {
     if (__type[0] != 't' || __mode[0] != 'm' || __arr == NULL || __nlenarr <= 1)
@@ -146,7 +133,32 @@ void FullArr(void *__arr, int __nlenarr, const char __type[2], const char __mode
     return;
 }
 
+void PrintArr(void *__arr, int __nlenarr, const char __type[2])
+{
+    int n = sizeof(__arr);
+    if (__type[0] != 't' || __arr == NULL || __nlenarr <= 1)
+        exit(-1);
+    char temp[] = {'%', __type[1], '\t'};
+    for (size_t i = 0; i < __nlenarr; i++)
+    {
+        __printpt(*(__type + 1), __arr, temp, i);
+    }
+    printf("\n");
+    return;
+}
+
 // 3D array library.
+void FullMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2], const char __mode[2])
+{
+    if (__type[0] != 't' || __mode[0] != 'm' || __matt == NULL)
+        exit(-1);
+    char temp[] = {'%', __type[1]};
+
+    for (size_t i = 0; i < __nlenarrR * __nlenarrC; i++)
+    {
+        __inputpt(*(__type + 1), __matt, temp, i, *(__mode + 1));
+    }
+}
 
 void PrintMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2])
 {
@@ -162,16 +174,4 @@ void PrintMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2]
         __printpt(*(__type + 1), __matt, temp, i);
     }
     printf("\n");
-}
-
-void FullMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2], const char __mode[2])
-{
-    if (__type[0] != 't' || __mode[0] != 'm' || __matt == NULL)
-        exit(-1);
-    char temp[] = {'%', __type[1]};
-
-    for (size_t i = 0; i < __nlenarrR * __nlenarrC; i++)
-    {
-        __inputpt(*(__type + 1), __matt, temp, i, *(__mode + 1));
-    }
 }

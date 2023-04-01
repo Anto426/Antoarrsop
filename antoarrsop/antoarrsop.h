@@ -11,6 +11,7 @@
    |float =>  tf|
    |char  =>  tc|
    |bool  =>  tb|
+   |string => ts|
    --------------
 
        _dim
@@ -27,6 +28,11 @@
    --------------------
 */
 
+// Variable String
+#define STRING_SIZE 1024
+typedef char string[STRING_SIZE];
+
+// functions
 void PrintArr(void *__arr, int __nlenarr, const char __type[2]);
 void FullArr(void *__arr, int __nlenarr, const char __type[2], const char __mode[2]);
 void PrintMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2]);
