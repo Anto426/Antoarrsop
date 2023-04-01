@@ -54,24 +54,28 @@ bool __randombool(int plus)
 // Printing function
 void __printpt(char __type, void *__po, char temp[], int _addbyte)
 {
-    void *__pt = __po;
     switch (__type)
     {
     case 'd':
         _addbyte *= sizeof(int);
-        printf(temp, *(__putint(__pt + _addbyte)));
+        printf(temp, *(__putint(__po + _addbyte)));
         break;
     case 'f':
         _addbyte *= sizeof(float);
-        printf(temp, *(__putfloat(__pt + _addbyte)));
+        printf(temp, *(__putfloat(__po + _addbyte)));
         break;
     case 'c':
         _addbyte *= sizeof(char);
-        printf(temp, *(__putchars(__pt + _addbyte)));
+        printf(temp, *(__putchars(__po + _addbyte)));
         break;
     case 'b':
         _addbyte *= sizeof(bool);
-        printf(temp, *(__putbool(__pt + _addbyte)));
+        printf(temp, *(__putbool(__po + _addbyte)));
+        break;
+    case 's':
+        _addbyte *= 1024;
+        printf(temp, (__putchars(__po + _addbyte)));
+
         break;
     default:
         exit(-1);
@@ -80,51 +84,55 @@ void __printpt(char __type, void *__po, char temp[], int _addbyte)
 // Input function
 void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
 {
-
-    void *__pt = __po;
     switch (__type)
     {
     case 'd':
         _addbyte *= sizeof(int);
         if (__mode == 'a')
 
-            *(__putint(__pt + _addbyte)) = __randomint(1, 1000, _addbyte);
+            *(__putint(__po + _addbyte)) = __randomint(1, 1000, _addbyte);
         else
-            scanf(temp, (__putint(__pt + _addbyte)));
+            scanf(temp, (__putint(__po + _addbyte)));
         break;
     case 'f':
         _addbyte *= sizeof(float);
         if (__mode == 'a')
-            *(__putfloat(__pt + _addbyte)) = __randomfloat(_addbyte);
+            *(__putfloat(__po + _addbyte)) = __randomfloat(_addbyte);
         else
-            scanf(temp, (__putfloat(__pt + _addbyte)));
+            scanf(temp, (__putfloat(__po + _addbyte)));
         break;
     case 'c':
         _addbyte *= sizeof(char);
         if (__mode == 'a')
-            *(__putchars(__pt + _addbyte)) = __randomchar(_addbyte);
+            *(__putchars(__po + _addbyte)) = __randomchar(_addbyte);
         else
-            scanf(temp, (__putchars(__pt + _addbyte)));
+            scanf(temp, (__putchars(__po + _addbyte)));
         break;
     case 'b':
         _addbyte *= sizeof(bool);
         if (__mode == 'a')
-            *(__putbool(__pt + _addbyte)) = __randombool(_addbyte);
+            *(__putbool(__po + _addbyte)) = __randombool(_addbyte);
         else
-            scanf(temp, (__putbool(__pt + _addbyte)));
+            scanf(temp, (__putbool(__po + _addbyte)));
+        break;
+    case 's':
+        _addbyte *= 1024;
+        if (__mode == 'a')
+            exit(-1);
+        else
+            scanf(temp, (__putchars(__po + _addbyte)));
+
         break;
     default:
         exit(-1);
     }
 }
-
 // 2D array
 void FullArr(void *__arr, int __nlenarr, const char __type[2], const char __mode[2])
 {
     if (__type[0] != 't' || __mode[0] != 'm' || __arr == NULL || __nlenarr <= 1)
         exit(-1);
     char temp[] = {'%', __type[1]};
-
     for (size_t i = 0; i < __nlenarr; i++)
     {
         __inputpt(*(__type + 1), __arr, temp, i, *(__mode + 1));
@@ -147,7 +155,7 @@ void PrintArr(void *__arr, int __nlenarr, const char __type[2])
     return;
 }
 
-// 3D array library.
+// 3D array
 void FullMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2], const char __mode[2])
 {
     if (__type[0] != 't' || __mode[0] != 'm' || __matt == NULL)
@@ -165,6 +173,7 @@ void PrintMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2]
     if (__type[0] != 't' || __matt == NULL)
         exit(-1);
     char temp[] = {'%', __type[1], '\t'};
+
     for (size_t i = 0; i < __nlenarrR * __nlenarrC; i++)
     {
         if (i != 0 && i % __nlenarrC == 0)
