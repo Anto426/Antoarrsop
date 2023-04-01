@@ -118,7 +118,10 @@ void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
     case 's':
         _addbyte *= 1024;
         if (__mode == 'a')
-            exit(-1);
+            for (size_t i = 0; i < 5; i++)
+            {
+                *(__putchars(__po + _addbyte + i)) = __randomchar(_addbyte + i);
+            }
         else
             scanf(temp, (__putchars(__po + _addbyte)));
 
