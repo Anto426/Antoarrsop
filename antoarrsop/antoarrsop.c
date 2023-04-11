@@ -73,7 +73,7 @@ void __printpt(char __type, void *__po, char temp[], int _addbyte)
         printf(temp, *(__putbool(__po + _addbyte)));
         break;
     case 's':
-        _addbyte *= 1024;
+        _addbyte *= STRING_SIZE;
         printf(temp, (__putchars(__po + _addbyte)));
 
         break;
@@ -186,4 +186,5 @@ void PrintMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2]
         __printpt(*(__type + 1), __matt, temp, i);
     }
     printf("\n");
+
 }
