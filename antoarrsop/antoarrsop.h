@@ -26,8 +26,6 @@
 typedef char string[STRING_SIZE];
 
 // functions
-void PrintArr(void *__arr, int __nlenarr, const char __type[2]);
-void FullArr(void *__arr, int __nlenarr, const char __type[2], const char __mode[2]);
-void PrintMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2]);
-void FullMat(void *__matt, int __nlenarrR, int __nlenarrC, const char __type[2], const char __mode[2]);
+void FullArrs(void *__arr, const char __type[2], const char __mode[2], int __nda, ...);
+void PrintArrs(void *__arr, const char __type[2], int __nda, ...);
 #endif
