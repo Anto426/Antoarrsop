@@ -25,29 +25,29 @@ bool *__putbool(void *p)
 }
 
 // Random number generator
-int __randomint(int min, int max, int plus)
+int __randomint(int plus)
 {
     int intc;
     srand(time(NULL) + plus);
-    intc = rand() % (max - min + 1) + min;
+    intc = rand() % (MAX - MIN + 1) + MIN;
     return intc;
 }
 
 float __randomfloat(int plus)
 {
-    float min = 0.0, max = 1000.0, floatc;
+    float floatc;
     srand(time(NULL) + plus);
-    floatc = ((float)rand() / (float)RAND_MAX) * (max - min) + min;
+    floatc = ((float)rand() / (float)RAND_MAX) * (MAX - MIN) + MIN;
     return floatc;
 }
 char __randomchar(int plus)
 {
-    return __randomint(33, 127, plus);
+    return __randomint(plus);
 }
 
 bool __randombool(int plus)
 {
-    int numero_casuale = __randomint(33, 127, plus);
+    int numero_casuale = __randomint(plus);
     bool booleano_casuale = (numero_casuale % 2 == 0) ? true : false;
     return booleano_casuale;
 }
@@ -85,8 +85,7 @@ void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
     {
     case 'd':
         if (__mode == 'a')
-
-            *(__putint(__po) + _addbyte) = __randomint(1, 1000, _addbyte);
+            *(__putint(__po) + _addbyte) = __randomint(_addbyte);
         else
             scanf(temp, (__putint(__po) + _addbyte));
         break;
@@ -109,11 +108,11 @@ void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
             scanf(temp, (__putbool(__po) + _addbyte));
         break;
     case 's':
-        _addbyte *= 1024;
+        _addbyte *= STRING_SIZE;
         if (__mode == 'a')
             for (size_t i = 0; i < 5; i++)
             {
-                *(__putchars(__po) + _addbyte) = __randomchar(_addbyte + i);
+                *(__putchars(__po) + i) = __randomchar(_addbyte + i);
             }
         else
             scanf(temp, (__putchars(__po) + _addbyte));
@@ -138,7 +137,7 @@ void FullArrs(void *__arr, const char __type[2], const char __mode[2], int __nda
     va_list args;
     va_start(args, __nda);
     int _nlentot = lenarr(args, __nda);
-    char temp[] = {'%', __type[1]};
+    char temp[] = {'%', __type[1], '\0'};
 
     for (size_t i = 0; i < _nlentot; i++)
     {
@@ -153,9 +152,13 @@ void PrintArrs(void *__arr, const char __type[2], int __nda, ...)
     va_start(args, __nda);
     int _nlentot = lenarr(args, __nda);
 
-    char temp[] = {'%', __type[1], '\t'};
+    char temp[] = {'%', __type[1], '\t', '\0'};
+    int last = va_arg(args, int);
+    va_end(args);
     for (size_t i = 0; i < _nlentot; i++)
     {
+        if (i % last == 0)
+            printf("\n");
         __printpt(*(__type + 1), __arr, temp, i);
     }
     printf("\n");
