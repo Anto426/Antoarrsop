@@ -68,7 +68,7 @@ void __printpt(char __type, void *__po, char temp[], int _addbyte)
         printf(temp, *(__putchars(__po) + _addbyte));
         break;
     case 'b':
-        printf(temp, *(__putbool(__po) + _addbyte));
+        printf("%s\t", *(__putbool(__po) + _addbyte) ? "true" : "false");
         break;
     case 's':
         _addbyte *= STRING_SIZE;
