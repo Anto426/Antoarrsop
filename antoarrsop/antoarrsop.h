@@ -26,13 +26,8 @@
 typedef char string[STRING_SIZE];
 
 // min max
-#ifndef MIN
-#define MIN 0
-#endif
-
-#ifndef MAX
-#define MAX 1000
-#endif
+extern int MAX;
+extern int MIN;
 // functions
 void FullArrs(void *__arr, const char __type[2], const char __mode[2], int __nda, ...);
 void PrintArrs(void *__arr, const char __type[2], int __nda, ...);

@@ -42,6 +42,8 @@ float __randomfloat(int plus)
 }
 char __randomchar(int plus)
 {
+
+    MIN = 33, MAX = 127;
     return __randomint(plus);
 }
 
@@ -71,7 +73,6 @@ void __printpt(char __type, void *__po, char temp[], int _addbyte)
     case 's':
         _addbyte *= STRING_SIZE;
         printf(temp, (__putchars(__po) + _addbyte));
-
         break;
     default:
         exit(-1);
@@ -97,7 +98,12 @@ void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
         break;
     case 'c':
         if (__mode == 'a')
+        {
+            int t1 = MAX, t2 = MIN;
             *(__putchars(__po) + _addbyte) = __randomchar(_addbyte);
+            MAX = t1;
+            MIN = t2;
+        }
         else
             scanf(temp, (__putchars(__po) + _addbyte));
         break;
@@ -110,10 +116,15 @@ void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
     case 's':
         _addbyte *= STRING_SIZE;
         if (__mode == 'a')
+        {
+            int t1 = MAX, t2 = MIN;
             for (size_t i = 0; i < 5; i++)
             {
-                *(__putchars(__po) + i) = __randomchar(_addbyte + i);
+                *(__putchars(__po) + _addbyte + i) = __randomchar(_addbyte + i);
             }
+            MAX = t1;
+            MIN = t2;
+        }
         else
             scanf(temp, (__putchars(__po) + _addbyte));
 
