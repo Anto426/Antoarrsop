@@ -1,6 +1,6 @@
 # 💫 Antoarrsop:
 
-💬 Hi, this is a simple library to handle the input and output of 1 or 2 d arrays
+💬 Hi, this is a simple library to handle the input and output of arrays
 
 # 💻 Compatible:
 
