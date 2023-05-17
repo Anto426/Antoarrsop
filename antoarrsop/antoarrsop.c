@@ -133,13 +133,16 @@ void __inputpt(char __type, void *__po, char temp[], int _addbyte, char __mode)
         exit(-1);
     }
 }
-int lenarr(va_list args, int __nda)
+int lenarr(va_list args, int __nda, int *last)
 {
-    int _nlentot = 1;
+    int _nlentot = 1, temp;
     for (int i = 0; i < __nda; i++)
     {
-        _nlentot *= va_arg(args, int);
+        temp = va_arg(args, int);
+        _nlentot *= temp;
     }
+    if (last != NULL)
+        *last = temp;
     return _nlentot;
 }
 
@@ -147,7 +150,7 @@ void FullArrs(void *__arr, const char __type[2], const char __mode[2], int __nda
 {
     va_list args;
     va_start(args, __nda);
-    int _nlentot = lenarr(args, __nda);
+    int _nlentot = lenarr(args, __nda, NULL);
     char temp[] = {'%', __type[1], '\0'};
 
     for (size_t i = 0; i < _nlentot; i++)
@@ -161,11 +164,10 @@ void PrintArrs(void *__arr, const char __type[2], int __nda, ...)
 {
     va_list args;
     va_start(args, __nda);
-    int _nlentot = lenarr(args, __nda);
-
+    int last;
+    int _nlentot = lenarr(args, __nda, &last);
     char temp[] = {'%', __type[1], '\t', '\0'};
-    int last = va_arg(args, int);
-    va_end(args);
+
     for (size_t i = 0; i < _nlentot; i++)
     {
         if (i % last == 0)
