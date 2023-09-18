@@ -1,3 +1,4 @@
+//--------------------------------------------------------------------------------------------------------------------
 // Library include
 #include "antoarrsop.h"
 #include <stdlib.h>
@@ -7,7 +8,8 @@
 #include <time.h>
 #include <stdarg.h>
 
-// converion p
+//--------------------------------------------------------------------------------------------------------------------
+
 int *__putint(void *p)
 {
     return (int *)p;
@@ -25,6 +27,7 @@ bool *__putbool(void *p)
     return (bool *)p;
 }
 
+// Cast
 int *__putint1(void *p)
 {
     __putint(p);
@@ -66,18 +69,19 @@ int (*__putintf1(void (*__fun_ptr)(void *)))(void *)
 }
 float (*__putfloatf1(void (*__fun_ptr)(void *)))(void *)
 {
-    __putintf(__fun_ptr);
+    __putfloatf(__fun_ptr);
 }
 char((*__putcharsf1(void (*__fun_ptr)(void *))))(void *)
 {
-    __putintf(__fun_ptr);
+    __putcharsf(__fun_ptr);
 }
 bool (*__putboolf1(void (*__fun_ptr)(void *)))(void *)
 {
-    __putintf(__fun_ptr);
+    __putboolf(__fun_ptr);
 }
 
-// Random number generator
+//--------------------------------------------------------------------------------------------------------------------
+
 int __randomint(int plus)
 {
     int intc;
@@ -107,32 +111,139 @@ bool __randombool(int plus)
     return booleano_casuale;
 }
 
+//--------------------------------------------------------------------------------------------------------------------
+// Input
+
+void inputallauto(void *__po, void (*fun)(void *), char temp[], int _addbyte)
+{
+
+    fun(__po);
+    *((__po + _addbyte)) = __randomint(_addbyte);
+}
+
+void inputallmanual(void *__po, void (*fun)(void *), char temp[], int _addbyte)
+{
+    fun(__po);
+    scanf(temp, (__po) + _addbyte);
+}
+
+void inputstringauto(void *__po, void (*fun)(void *), char temp[], int _addbyte, char __mode)
+{
+
+    _addbyte *= STRING_SIZE;
+
+    int t1 = MAX, t2 = MIN;
+    for (size_t i = 0; i < 5; i++)
+    {
+        fun(__po);
+        *(__po + _addbyte + i) = __randomchar(_addbyte + i);
+    }
+    MAX = t1;
+    MIN = t2;
+}
+
+void inputstringmanual(void *__po, void (*fun)(void *), char temp[], int _addbyte, char __mode)
+{
+    _addbyte *= STRING_SIZE;
+    fun(__po);
+    scanf(temp, (__po + _addbyte));
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+// output
+
+void outputall(void *__po, void (*fun)(void *), char temp[], int _addbyte)
+{
+    fun(__po);
+    printf(temp, (__po + _addbyte));
+}
+void outputbool(void *__po, void (*fun)(void *), char temp[], int _addbyte)
+{
+
+    printf(temp, *(__putchars(__po) + _addbyte));
+}
+
+void outputstring(void *__po, void (*fun)(void *), char temp[], int _addbyte, char __mode)
+{
+
+    _addbyte *= STRING_SIZE;
+
+    int t1 = MAX, t2 = MIN;
+    for (size_t i = 0; i < 5; i++)
+    {
+        fun(__po);
+        *(fun)(__po + _addbyte + i) = __randomchar(_addbyte + i);
+    }
+    MAX = t1;
+    MIN = t2;
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+
 // choise fun
-void __typesel(char __type, void (*__fun_ptr)(void *), void (*fun_tocon)(void *))
+void __typesel(char __type, bool __mode, void (*fpconvert)(void *), void (*fpfconvert)(void (*)(void *)), void *fgen, void *finoon)
 {
 
     switch (__type)
     {
     case 'd':
-        __fun_ptr = __putint1;
-        fun_tocon = __putintf1;
+        fpconvert = __putint1;
+        fpfconvert = __putintf1;
+
+        if (__mode)
+        {
+            fgen = __randomint;
+            finoon = inputallauto;
+        }
+        else
+            finoon = inputallmanual;
         break;
+
     case 'f':
-        __fun_ptr = __putfloat1;
-        fun_tocon = __putfloatf1;
+        fpconvert = __putint1;
+        fpfconvert = __putintf1;
+        if (__mode)
+        {
+            fgen = __randomint;
+            finoon = ;
+        }
+        else
+            finoon = ;
         break;
     case 'c':
-        __fun_ptr = __putchars1;
-        fun_tocon = __putcharsf1;
+        fpconvert = __putint1;
+        fpfconvert = __putintf1;
+        if (__mode)
+        {
+            fgen = __randomint;
+            finoon = ;
+        }
+        else
+            finoon = ;
         break;
     case 'b':
-        __fun_ptr = __putbool;
-        fun_tocon = __putboolf1;
+        fpconvert = __putint1;
+        fpfconvert = __putintf1;
+        if (__mode)
+        {
+            fgen = __randomint;
+            finoon = ;
+        }
+        else
+            finoon = ;
         break;
     case 's':
-        __fun_ptr = __putchars1;
-        fun_tocon = __putcharsf1;
+        fpconvert = __putint1;
+        fpfconvert = __putintf1;
+        if (__mode)
+        {
+            fgen = __randomint;
+            finoon = ;
+        }
+        else
+            finoon = ;
         break;
+
     default:
         exit(-1);
     }
@@ -166,41 +277,9 @@ void __printpt(char __type, void *__po, char temp[], int _addbyte)
 }
 
 // Input function
-void __inputpt(void *__po, void (*fun)(void *), char temp[], int _addbyte, char __mode)
+void __inputpt(void *__po, void (*fun)(void *), void (*ins)(void *, void (*)(void *), char[], int, char), char temp[], int _addbyte, char __mode)
 {
-    switch (temp[1])
-    {
-    case 's':
-        _addbyte *= STRING_SIZE;
-        if (__mode == 'a')
-        {
-            int t1 = MAX, t2 = MIN;
-            for (size_t i = 0; i < 5; i++)
-            {
-                fun(__po);
-                *(fun)(__po + _addbyte + i) = __randomchar(_addbyte + i);
-            }
-            MAX = t1;
-            MIN = t2;
-        }
-        else
-        {
-            fun(__po);
-            scanf(temp, ((fun(__po)) + _addbyte));
-        }
-
-        break;
-    default:
-        if (__mode == 'a')
-        {
-            fun(__po);
-            *(__po + _addbyte) = __randomint(_addbyte);
-        }
-
-        else
-            scanf(temp, ((fun(__po)) + _addbyte));
-        break;
-    }
+    ins(__po, fun, temp, _addbyte, __mode);
 }
 
 int lenarr(va_list args, int __nda, int *last)
