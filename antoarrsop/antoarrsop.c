@@ -28,54 +28,54 @@ bool *__putbool(void *p)
 }
 
 // Cast
-int *__putint1(void *p)
+void *__putint1(void *p)
 {
     __putint(p);
 }
-float *__putfloat1(void *p)
+void *__putfloat1(void *p)
 {
     __putfloat(p);
 }
-char *__putchars1(void *p)
+void *__putchars1(void *p)
 {
     __putchars(p);
 }
-bool *__putbool1(void *p)
+void *__putbool1(void *p)
 {
     __putbool(p);
 }
 
 // converion fun puntatori
-int (*__putintf(void (*__fun_ptr)(void *)))(void *)
+int (*__putintf(void *(__fun_ptr)(void *)))(void *)
 {
     return (int (*)(void *))__fun_ptr;
 }
-float (*__putfloatf(void (*__fun_ptr)(void *)))(void *)
+float (*__putfloatf(void *(__fun_ptr)(void *)))(void *)
 {
     return (float (*)(void *))__fun_ptr;
 }
-char((*__putcharsf(void (*__fun_ptr)(void *))))(void *)
+char((*__putcharsf(void *(__fun_ptr)(void *))))(void *)
 {
     return (char (*)(void *))__fun_ptr;
 }
-bool (*__putboolf(void (*__fun_ptr)(void *)))(void *)
+bool (*__putboolf(void *(__fun_ptr)(void *)))(void *)
 {
     return (bool (*)(void *))__fun_ptr;
 }
 
-int (*__putintf1(void (*__fun_ptr)(void *)))(void *)
+void (*__putintf1(void *(__fun_ptr)(void *)))(void *)
 {
     __putintf(__fun_ptr);
 }
-float (*__putfloatf1(void (*__fun_ptr)(void *)))(void *)
+void (*__putfloatf1(void *(__fun_ptr)(void *)))(void *)
 {
     __putfloatf(__fun_ptr);
 }
-char((*__putcharsf1(void (*__fun_ptr)(void *))))(void *)
+void((*__putcharsf1(void *(__fun_ptr)(void *))))(void *)
 {
     __putcharsf(__fun_ptr);
 }
-bool (*__putboolf1(void (*__fun_ptr)(void *)))(void *)
+void((*__putboolf1(void *(__fun_ptr)(void *))))(void *)
 {
     __putboolf(__fun_ptr);
 }
@@ -111,23 +111,46 @@ bool __randombool(int plus)
     return booleano_casuale;
 }
 
+void __randomint1(int plus, void *p)
+{
+    __putint(p);
+    __randomint(plus);
+}
+
+void __randomfloat1(int plus, void *p)
+{
+    __putfloat(p);
+    __randomfloat(plus);
+}
+void __randomchar1(int plus, void *p)
+{
+    __putchar(p);
+    __randomchar(plus);
+}
+
+void __randombool1(int plus, void *p)
+{
+    __putbool(p);
+    __randombool(plus);
+}
 //--------------------------------------------------------------------------------------------------------------------
 // Input
 
-void inputallauto(void *__po, void (*fun)(void *), char temp[], int _addbyte)
+void inputallauto(void *__po, void *(fun)(void *), char temp[], int _addbyte)
 {
 
-    fun(__po);
-    *((__po + _addbyte)) = __randomint(_addbyte);
+    *(fun(__po)) + _addbyte = __randomint(_addbyte);
 }
 
-void inputallmanual(void *__po, void (*fun)(void *), char temp[], int _addbyte)
+
+
+void inputallmanual(void *__po, void *(fun)(void *), char temp[], int _addbyte)
 {
     fun(__po);
     scanf(temp, (__po) + _addbyte);
 }
 
-void inputstringauto(void *__po, void (*fun)(void *), char temp[], int _addbyte, char __mode)
+void inputstringauto(void *__po, void *(fun)(void *), char temp[], int _addbyte)
 {
 
     _addbyte *= STRING_SIZE;
@@ -142,7 +165,7 @@ void inputstringauto(void *__po, void (*fun)(void *), char temp[], int _addbyte,
     MIN = t2;
 }
 
-void inputstringmanual(void *__po, void (*fun)(void *), char temp[], int _addbyte, char __mode)
+void inputstringmanual(void *__po, void *(fun)(void *), char temp[], int _addbyte)
 {
     _addbyte *= STRING_SIZE;
     fun(__po);
@@ -152,18 +175,18 @@ void inputstringmanual(void *__po, void (*fun)(void *), char temp[], int _addbyt
 //--------------------------------------------------------------------------------------------------------------------
 // output
 
-void outputall(void *__po, void (*fun)(void *), char temp[], int _addbyte)
+void outputall(void *__po, void *(fun)(void *), char temp[], int _addbyte)
 {
     fun(__po);
     printf(temp, (__po + _addbyte));
 }
-void outputbool(void *__po, void (*fun)(void *), char temp[], int _addbyte)
+void outputbool(void *__po, void *(fun)(void *), char temp[], int _addbyte)
 {
 
     printf(temp, *(__putchars(__po) + _addbyte));
 }
 
-void outputstring(void *__po, void (*fun)(void *), char temp[], int _addbyte, char __mode)
+void outputstring(void *__po, void *(fun)(void *), char temp[], int _addbyte)
 {
 
     _addbyte *= STRING_SIZE;
@@ -171,8 +194,8 @@ void outputstring(void *__po, void (*fun)(void *), char temp[], int _addbyte, ch
     int t1 = MAX, t2 = MIN;
     for (size_t i = 0; i < 5; i++)
     {
-        fun(__po);
-        *(fun)(__po + _addbyte + i) = __randomchar(_addbyte + i);
+        *(fun(__po));
+        *((fun)(__po + _addbyte + i)) = __randomchar(_addbyte + i);
     }
     MAX = t1;
     MIN = t2;
@@ -181,67 +204,72 @@ void outputstring(void *__po, void (*fun)(void *), char temp[], int _addbyte, ch
 //--------------------------------------------------------------------------------------------------------------------
 
 // choise fun
-void __typesel(char __type, bool __mode, void (*fpconvert)(void *), void (*fpfconvert)(void (*)(void *)), void *fgen, void *finoon)
+void __typesel(char __type, bool __mode, void *(fpconvert)(void *), void *(fpfconvert)(void (*)(void *)), void *(fgen)(int, void *), void *(finoon)(void *, void (*)(void *), char[], int), void *(finoon1)(void *, void (*)(void *), char[], int))
 {
 
     switch (__type)
     {
     case 'd':
-        fpconvert = __putint1;
-        fpfconvert = __putintf1;
-
+        fpconvert = &__putint1;
+        fpfconvert = &__putintf1;
+        finoon1 = outputall;
         if (__mode)
         {
-            fgen = __randomint;
-            finoon = inputallauto;
+            fgen = &__randomint1;
+            finoon = &inputallauto;
         }
         else
-            finoon = inputallmanual;
+            finoon = &inputallmanual;
         break;
 
     case 'f':
-        fpconvert = __putint1;
-        fpfconvert = __putintf1;
+        fpconvert = &__putfloat1;
+        fpfconvert = &__putfloatf1;
+        finoon1 = &outputall;
+
         if (__mode)
         {
-            fgen = __randomint;
-            finoon = ;
+            fgen = &__randomfloat1;
+            finoon = &inputallauto;
         }
         else
-            finoon = ;
+            finoon = &inputallmanual;
         break;
     case 'c':
-        fpconvert = __putint1;
-        fpfconvert = __putintf1;
+        fpconvert = &__putchars1;
+        fpfconvert = &__putcharsf1;
+        finoon1 = &outputall;
         if (__mode)
         {
-            fgen = __randomint;
-            finoon = ;
+            fgen = &__randomchar1;
+            finoon = &inputallauto;
         }
         else
-            finoon = ;
+            finoon = &inputallmanual;
         break;
     case 'b':
-        fpconvert = __putint1;
-        fpfconvert = __putintf1;
+        fpconvert = &__putbool1;
+        fpfconvert = &__putboolf1;
+        finoon1 = &outputbool;
         if (__mode)
         {
-            fgen = __randomint;
-            finoon = ;
+            fgen = &__randombool1;
+            finoon = &inputallauto;
         }
         else
-            finoon = ;
+            finoon = &inputallmanual;
         break;
     case 's':
-        fpconvert = __putint1;
-        fpfconvert = __putintf1;
+        fpconvert = &__putchars1;
+        fpfconvert = &__putcharsf1;
+        finoon1 = &outputstring;
         if (__mode)
         {
-            fgen = __randomint;
-            finoon = ;
+            fgen = &__randomchar1;
+            finoon = &inputstringauto;
         }
         else
-            finoon = ;
+            finoon = &inputstringmanual;
         break;
 
     default:
@@ -276,12 +304,6 @@ void __printpt(char __type, void *__po, char temp[], int _addbyte)
     }
 }
 
-// Input function
-void __inputpt(void *__po, void (*fun)(void *), void (*ins)(void *, void (*)(void *), char[], int, char), char temp[], int _addbyte, char __mode)
-{
-    ins(__po, fun, temp, _addbyte, __mode);
-}
-
 int lenarr(va_list args, int __nda, int *last)
 {
     int _nlentot = 1, temp;
@@ -301,12 +323,12 @@ void FullArrs(void *__arr, const char __type[2], const char __mode[2], int __nda
     va_start(args, __nda);
     int _nlentot = lenarr(args, __nda, NULL);
     char temp[] = {'%', __type[1], '\0'};
-    void (*__fun_putfuncovers)(void *), (*__fun_putcovers)(void *);
-    __typesel(__type[1], __fun_putfuncovers, __fun_putcovers);
+    void *(__funputfuncovers)(void *), (__fun_putcovers)(void (*)(void *)), (fgen)(int, void *), (finoon)(void *, void (*)(void *), char[], int), (finoon1)(void *, void (*)(void *), char[], int);
+    __typesel(__type[1], __mode[1] == "a" ? true : false, __funputfuncovers, __fun_putcovers, fgen, finoon, finoon1);
 
     for (size_t i = 0; i < _nlentot; i++)
     {
-        __inputpt(__arr, __fun_putcovers, temp, i, __mode[1]);
+        *finoon()
     }
     va_end(args);
 }
@@ -318,7 +340,8 @@ void PrintArrs(void *__arr, const char __type[2], int __nda, ...)
     int last;
     int _nlentot = lenarr(args, __nda, &last);
     char temp[] = {'%', __type[1], '\t', '\0'};
-
+    void *(__funputfuncovers)(void *), (__fun_putcovers)(void (*)(void *)), (fgen)(int, void *), (finoon)(void *, void (*)(void *), char[], int), (finoon1)(void *, void (*)(void *), char[], int);
+    __typesel(__type[1], NULL, __funputfuncovers, __fun_putcovers, fgen, finoon, finoon1);
     for (size_t i = 0; i < _nlentot; i++)
     {
         if (i % last == 0)
